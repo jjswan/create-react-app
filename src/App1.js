@@ -6,7 +6,7 @@ import styles from "./App.module.css";
 import {useState, useEffect} from "react";
 
 function App() {
-  //랜더링할 때마다 항상 새롭게 나오는 부분
+  //App function을 랜더링할 때마다 항상 새롭게 나오는 부분
   const [counter, setCounter] = useState(0);
   const [keyword, setKeyword] = useState("");
 

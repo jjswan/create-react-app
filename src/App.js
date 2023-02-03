@@ -1,51 +1,35 @@
-import { useEffect, useState } from "react"; 
-
+import { useState, useEffect } from "react";
+import Movie from "./Movie";
 
 function App(){
   const [loading, setLoading] = useState(true);
-  //아래에서 가져온 코인 정보에 접근하기 위해 useState 사용
-  const [coins, setCoins] = useState([]);
-  //코인을 살 돈 정보에 접근할 useState
-  const [money, setMoney] = useState(0);
-  //코인 심볼 정보에 접근할 useState
-  const [symbol, setSymbol] = useState("USD");
-  //component가 생성되었을 때만 실시
+  const [movies, setMovies] = useState([]);
+  //useEffect에서 사용할 async가 붙은 function 
+  //아래 useEffect에 있었던 fetch.then 부분을 async, awiat로 바꿔서 만든 function
+  async function getMovies(){
+    const getResponse = await fetch(`https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`);
+    const toJson = await getResponse.json();
+    setMovies(toJson.data.movies);
+    setLoading(false);
+  }
+  //function App이 생성된 최초에만 실행
   useEffect(()=>{
-    fetch("https://api.coinpaprika.com/v1/tickers")
-    .then((response)=>response.json())
-    .then((data)=>setCoins(data)); setLoading(false);
+    getMovies()
+    // fetch(`https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`)
+    // .then((response)=>response.json())
+    // .then((data)=>setMovies(data.data.movies)); setLoading(false);
   }, [])
-  
-  function onChange(event){
-    localStorage.setItem("money", event.target.value)
-    setMoney(event.target.value);
-  }
-  
-  function moneyChange(){
-    const selectTag = document.querySelector("#coin-select");
-    const price = selectTag.value.split(",")[0];
-    const newsymbol = selectTag.value.split(",")[1];
-    setMoney((prev)=> localStorage.getItem("money")/price);
-    setSymbol((prev)=> newsymbol);
-  }
 
-  return(
-    <div>
-      <h1>The Coins({coins.length})</h1>
-      {loading? <strong>Loading...</strong>:null}
-      <input onChange={onChange} type="number" placeholder="Write the amount you want(US$)"></input>
-      <p>{money} {symbol}</p>
-      <hr></hr>
-      <label htmlFor="coin-select">Select coin</label>
-      <select id="coin-select" onChange={moneyChange}>
-        <option value="">Please choose a coin</option>
-        {coins.map((item)=> <option key={item.id} value={[item.quotes.USD.price, item.symbol]} >{item.name}({item.symbol})</option>)}
-      </select>
-      {/* <ul>
-        {coins.map((item)=> <li key={item.id}>{item.name} ({item.symbol}) : {item.quotes.USD.price}</li>)}
-      </ul> */}
-    </div>
+  console.log(movies);
+
+  return (
+  <div>
+    {loading? <h1>Loading</h1>:<div>{movies.map((movie)=>
+    <Movie key={movie.id} title={movie.title} coverImg={movie.medium_cover_image} summary={movie.summary} genres={movie.genres}/>)}</div>}
+  </div>
   )
 }
+
+
 
 export default App;

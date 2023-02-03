@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import styles from "./Button.module.css"
 
-//인자로 text props를 받아서 사용하는 Button function
+//인자로 text props를 받아서 사용하는 Button component
 function Button({text}){
   return <button className={styles.btn}>{text}</button>
 }
