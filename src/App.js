@@ -3,12 +3,12 @@ import Home from "./routes/Home";
 import Detail from "./routes/Detail"
 
 function App(){
-  return <Router>
+  return <Router basename={process.env.PUBLIC_URL}>
     <Routes>
       {/* 사용자가 "/" path에 있으면 Home.js를 랜더링하여 보여줄 것 */}
-      <Route path={`${process.env.PUBLIC_URL}/`} element={<Home/>}>
+      <Route path="/" element={<Home/>}>
       </Route>
-      <Route path={`${process.env.PUBLIC_URL}/movie/:id`} element={<Detail/>}>  
+      <Route path="/movie/:id" element={<Detail/>}>  
       </Route>
     </Routes>
   </Router>;
