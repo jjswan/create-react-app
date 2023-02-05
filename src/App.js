@@ -1,33 +1,17 @@
-import { useState, useEffect } from "react";
-import Movie from "./Movie";
+import { BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import Home from "./routes/Home";
+import Detail from "./routes/Detail"
 
 function App(){
-  const [loading, setLoading] = useState(true);
-  const [movies, setMovies] = useState([]);
-  //useEffect에서 사용할 async가 붙은 function 
-  //아래 useEffect에 있었던 fetch.then 부분을 async, awiat로 바꿔서 만든 function
-  async function getMovies(){
-    const getResponse = await fetch(`https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`);
-    const toJson = await getResponse.json();
-    setMovies(toJson.data.movies);
-    setLoading(false);
-  }
-  //function App이 생성된 최초에만 실행
-  useEffect(()=>{
-    getMovies()
-    // fetch(`https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`)
-    // .then((response)=>response.json())
-    // .then((data)=>setMovies(data.data.movies)); setLoading(false);
-  }, [])
-
-  console.log(movies);
-
-  return (
-  <div>
-    {loading? <h1>Loading</h1>:<div>{movies.map((movie)=>
-    <Movie key={movie.id} title={movie.title} coverImg={movie.medium_cover_image} summary={movie.summary} genres={movie.genres}/>)}</div>}
-  </div>
-  )
+  return <Router>
+    <Routes>
+      {/* 사용자가 "/" path에 있으면 Home.js를 랜더링하여 보여줄 것 */}
+      <Route path={`${process.env.PUBLIC_URL}/`} element={<Home/>}>
+      </Route>
+      <Route path={`${process.env.PUBLIC_URL}/movie/:id`} element={<Detail/>}>  
+      </Route>
+    </Routes>
+  </Router>;
 }
 
 
